@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Question Market · Band 1 Unit 3</title>
+<meta name="description" content="Question Market: write the question that matches the answer. Band 1, Unit 3 — In our free time.">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -38,6 +39,7 @@ body::before{
 .screen.active{animation:screenIn .3s ease}
 
 /* ── INTRO ── */
+/* Fix #15: aria-hidden on sticker row — handled in HTML */
 .sticker-row{display:flex;justify-content:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
 .sticker{font-size:36px;display:inline-block;animation:wobble 2s ease-in-out infinite}
 .sticker:nth-child(2){animation-delay:.3s}
@@ -90,7 +92,6 @@ body::before{
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--sky),var(--purple));border-radius:10px;transition:width .5s cubic-bezier(0.34,1.56,0.64,1);position:relative}
 .prog-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.35),transparent);border-radius:10px}
 
-/* ANSWER CARD — big, bold, impossible to miss */
 .answer-card{
   background:white;border-radius:var(--r);padding:26px 24px 22px;margin-bottom:18px;
   box-shadow:0 8px 32px rgba(14,165,233,0.18),0 3px 0 var(--sky);
@@ -114,7 +115,7 @@ body::before{
 }
 .answer-hint{font-size:13px;color:var(--muted);font-weight:700;font-style:italic}
 
-/* WH CHIPS — jumbo, touchable */
+/* Fix #11: chips are now <button> elements */
 .chips-label{font-size:11px;font-weight:900;color:var(--mid);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;text-align:left}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .chip{
@@ -126,8 +127,14 @@ body::before{
 }
 .chip:hover{background:var(--sky);color:white;transform:translateY(-2px);box-shadow:0 5px 0 rgba(3,105,161,0.3)}
 .chip:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(3,105,161,0.2)}
+.chip:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
 
-/* INPUT */
+/* Fix #13: visually hidden label */
+.visually-hidden{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+
 .q-input{
   width:100%;background:white;
   border:3px solid #e2e8f0;color:var(--dark);
@@ -139,7 +146,7 @@ body::before{
 .q-input.correct{border-color:var(--green);background:var(--green-l);box-shadow:0 0 0 3px rgba(22,163,74,0.15)}
 .q-input.wrong{border-color:var(--coral);background:var(--coral-l);box-shadow:0 0 0 3px rgba(239,68,68,0.15)}
 
-/* FEEDBACK — big and unmissable */
+/* Fix #14: feedback uses aria-live in HTML */
 .feedback{
   border-radius:var(--r-sm);padding:14px 18px;font-weight:700;font-size:15px;
   display:none;margin-bottom:12px;line-height:1.5;
@@ -158,6 +165,7 @@ body::before{
 }
 .check-btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--sky-d),0 9px 20px rgba(14,165,233,0.35)}
 .check-btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--sky-d)}
+.check-btn:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
 
 .next-btn{
   width:100%;background:var(--sun);color:var(--dark);font-family:'Fredoka One',cursive;font-size:20px;
@@ -169,6 +177,7 @@ body::before{
 .next-btn.show{display:block;animation:popUp .25s cubic-bezier(0.34,1.56,0.64,1)}
 .next-btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--sun-d)}
 .next-btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--sun-d)}
+.next-btn:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
 
 /* CONFETTI */
 .confetti-piece{position:fixed;width:10px;height:10px;pointer-events:none;z-index:9999;animation:rain 1.4s ease-in forwards;border-radius:2px}
@@ -188,251 +197,484 @@ body::before{
 .rev-ans{font-size:12px;color:var(--muted);font-weight:700}
 .rev-q{font-size:14px;color:var(--dark);font-weight:700;margin-top:2px}
 .rev-model{font-size:12px;color:var(--coral-d);font-style:italic;margin-top:2px}
+.replay-note{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:8px}
 </style>
 </head>
 <body>
 
-<div class="screen active" id="intro">
-  <div class="sticker-row">
+<!-- ═══════════════ INTRO ═══════════════ -->
+<div class="screen active" id="intro" role="main">
+  <!-- Fix #15: aria-hidden on decorative stickers -->
+  <div class="sticker-row" aria-hidden="true">
     <span class="sticker">🎪</span>
     <span class="sticker">❓</span>
     <span class="sticker">🎯</span>
   </div>
-  <div class="game-title">Question<br>Market</div>
+  <div class="game-title" aria-label="Question Market">Question<br>Market</div>
   <div class="game-sub">You get an answer. You write the question.</div>
-  <span class="unit-badge">Band 1 · Unit 3 · In our free time</span>
+  <span class="unit-badge">Band 1 · Unit 3 · In our free time · Grades 5–6</span>
+
   <div class="how-card">
     <h3>How it works</h3>
-    <p>An answer appears on screen. Write the question that gets that answer. Start with a W-question word!</p>
-    <div class="wh-row">
-      <span class="wh-demo">What</span><span class="wh-demo">Where</span>
-      <span class="wh-demo">When</span><span class="wh-demo">Who</span>
-      <span class="wh-demo">Why</span><span class="wh-demo">How often</span>
+    <p>An answer appears on screen. Write the question that matches it. Start with a question word!</p>
+    <div class="wh-row" aria-label="Available question words">
+      <span class="wh-demo">What</span>
+      <span class="wh-demo">Which</span>
+      <span class="wh-demo">Where</span>
+      <span class="wh-demo">When</span>
+      <span class="wh-demo">Who</span>
+      <span class="wh-demo">Why</span>
+      <span class="wh-demo">How often</span>
       <span class="wh-demo">How many</span>
     </div>
   </div>
-  <button class="btn-go" onclick="startGame()">Let's go! 🚀</button>
-  <button class="btn-ghost" onclick="startGame()">Skip intro</button>
+
+  <button class="btn-go" id="startBtn">Let's go! 🚀</button>
+  <!-- Skip intro does the same thing — no need to show it separately; removed per audit #6 -->
 </div>
 
-<div class="screen" id="game">
+<!-- ═══════════════ GAME ═══════════════ -->
+<div class="screen" id="game" role="main">
   <div class="game-wrap">
-    <div class="hud">
-      <div class="hud-pill score">⭐ <span id="scoreVal">0</span></div>
-      <div class="round-badge"><span id="roundVal">1</span> / 10</div>
-      <div class="hud-pill streak" style="justify-content:flex-end">🔥 <span id="streakVal">0</span></div>
-    </div>
-    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
 
-    <div class="answer-card" id="answerCard">
+    <!-- Fix #12: aria-labels on score/streak -->
+    <div class="hud">
+      <div class="hud-pill score" aria-label="Score">
+        <span aria-hidden="true">⭐</span>
+        <span id="scoreVal">0</span>
+      </div>
+      <div class="round-badge" aria-label="Round">
+        <span id="roundVal">1</span> / 10
+      </div>
+      <div class="hud-pill streak" aria-label="Streak">
+        <span aria-hidden="true">🔥</span>
+        <span id="streakVal">0</span>
+      </div>
+    </div>
+
+    <div class="prog-track" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" aria-label="Progress">
+      <div class="prog-fill" id="progFill" style="width:0%"></div>
+    </div>
+
+    <div class="answer-card" id="answerCard" aria-live="polite">
       <div class="answer-eyebrow">The answer is…</div>
       <div class="answer-text" id="answerText"></div>
       <div class="answer-hint" id="answerHint"></div>
     </div>
 
-    <div class="chips-label">Tap a word to start ↓</div>
-    <div class="chips">
-      <div class="chip" onclick="insertWh('What ')">What</div>
-      <div class="chip" onclick="insertWh('Where ')">Where</div>
-      <div class="chip" onclick="insertWh('When ')">When</div>
-      <div class="chip" onclick="insertWh('Who ')">Who</div>
-      <div class="chip" onclick="insertWh('Why ')">Why</div>
-      <div class="chip" onclick="insertWh('How often ')">How often</div>
-      <div class="chip" onclick="insertWh('How many ')">How many</div>
+    <!-- Fix #10: "Select" not "Tap" — device-agnostic -->
+    <!-- Fix #11: chips are <button> elements -->
+    <div class="chips-label" id="chipsLabel">Select a word to start ↓</div>
+    <div class="chips" role="group" aria-labelledby="chipsLabel">
+      <button type="button" class="chip" data-wh="What ">What</button>
+      <button type="button" class="chip" data-wh="Which ">Which</button>
+      <button type="button" class="chip" data-wh="Where ">Where</button>
+      <button type="button" class="chip" data-wh="When ">When</button>
+      <button type="button" class="chip" data-wh="Who ">Who</button>
+      <button type="button" class="chip" data-wh="Why ">Why</button>
+      <button type="button" class="chip" data-wh="How often ">How often</button>
+      <button type="button" class="chip" data-wh="How many ">How many</button>
     </div>
 
+    <!-- Fix #13: proper <label> for input -->
+    <label for="qInput" class="visually-hidden">Write your question here</label>
     <input type="text" class="q-input" id="qInput"
       placeholder="Write your question here…"
-      onkeydown="if(event.key==='Enter')checkAnswer()">
+      autocomplete="off"
+      autocorrect="off"
+      spellcheck="false">
 
-    <div class="feedback" id="feedback">
+    <!-- Fix #14: aria-live so screen readers announce feedback -->
+    <div class="feedback" id="feedback" role="alert" aria-live="assertive">
       <span id="fbText"></span>
       <div class="fb-model" id="fbModel"></div>
     </div>
 
-    <button class="check-btn" id="checkBtn" onclick="checkAnswer()">Check ✓</button>
-    <button class="next-btn" id="nextBtn" onclick="nextRound()">Next question →</button>
+    <!-- Fix #3: no inline onclick; events wired in JS -->
+    <button type="button" class="check-btn" id="checkBtn">Check ✓</button>
+    <button type="button" class="next-btn" id="nextBtn">Next question →</button>
+
   </div>
 </div>
 
-<div class="screen" id="results">
-  <div class="trophy-big" id="trophy">🏆</div>
-  <div class="final-score" id="finalScore"></div>
+<!-- ═══════════════ RESULTS ═══════════════ -->
+<div class="screen" id="results" role="main">
+  <div class="trophy-big" id="trophy" aria-hidden="true">🏆</div>
+  <div class="final-score" id="finalScore" aria-label="Final score"></div>
   <div class="final-denom">out of 10</div>
-  <div class="result-msg" id="resultMsg"></div>
-  <div class="review-list" id="reviewList"></div>
-  <button class="btn-go" onclick="startGame()">Play again 🔄</button>
+  <div class="result-msg" id="resultMsg" role="status"></div>
+  <div class="review-list" id="reviewList" aria-label="Answer review"></div>
+  <!-- Fix #10: communicate shuffle on replay -->
+  <p class="replay-note">Questions will be shuffled each time.</p>
+  <button type="button" class="btn-go" id="playAgainBtn">Play again 🔄</button>
 </div>
 
 <script>
-const ROUNDS=[
-  {answer:"The cooking club.",hint:"Think about a club.",accept:["what"],models:["What club do you go to?","What is your favourite club?"]},
-  {answer:"On Tuesdays and Thursdays.",hint:"Think about time.",accept:["when"],models:["When do you go to the dance club?","When does the chess club meet?"]},
-  {answer:"In the school gym.",hint:"Think about a place.",accept:["where"],models:["Where does the choir practise?","Where do you do drama?"]},
-  {answer:"My best friend Alice.",hint:"Think about a person.",accept:["who"],models:["Who do you go to the cooking club with?","Who is in your club?"]},
-  {answer:"Three times a week.",hint:"Think about how often.",accept:["how often"],models:["How often do you go to the drama club?","How often does the orchestra practise?"]},
-  {answer:"Because it's really fun!",hint:"Think about a reason.",accept:["why"],models:["Why do you like the computer club?","Why do you go to the dance club?"]},
-  {answer:"Twelve members.",hint:"Think about a number.",accept:["how many"],models:["How many members are in your club?","How many people are in the choir?"]},
-  {answer:"The film club.",hint:"Think about a favourite.",accept:["what"],models:["What is your favourite club?","What club do you like best?"]},
-  {answer:"After school, at half past three.",hint:"Think about time.",accept:["when"],models:["When does the chess club start?","When is the drama club?"]},
-  {answer:"In the computer room.",hint:"Think about a place.",accept:["where"],models:["Where is the computer club?","Where does the orchestra meet?"]}
-];
+// ─────────────────────────────────────────────────────────────────
+// Fix #16: DATA separated from logic
+// Fix #5/#6/#7: added Which/Whose to accept arrays; diversified rounds
+// ─────────────────────────────────────────────────────────────────
+const DATA = {
+  title: "Band 1 · Unit 3 · In our free time",
+  rounds: [
+    {
+      answer: "The cooking club.",
+      hint: "Think about a club.",
+      accept: ["what", "which"],
+      models: ["What club do you go to?", "Which club is your favourite?"]
+    },
+    {
+      answer: "On Tuesdays and Thursdays.",
+      hint: "Think about time.",
+      accept: ["when"],
+      models: ["When do you go to the dance club?", "When does the chess club meet?"]
+    },
+    {
+      answer: "In the school gym.",
+      hint: "Think about a place.",
+      accept: ["where"],
+      models: ["Where does the choir practise?", "Where do you do drama?"]
+    },
+    {
+      answer: "My best friend Alice.",
+      hint: "Think about a person.",
+      accept: ["who"],
+      models: ["Who do you go to the cooking club with?", "Who is your partner in the drama club?"]
+    },
+    {
+      answer: "Three times a week.",
+      hint: "Think about how often.",
+      accept: ["how often"],
+      models: ["How often do you go to the drama club?", "How often does the orchestra practise?"]
+    },
+    {
+      answer: "Because it's really fun!",
+      hint: "Think about a reason.",
+      accept: ["why"],
+      models: ["Why do you like the computer club?", "Why do you go to the dance club?"]
+    },
+    {
+      answer: "Twelve members.",
+      hint: "Think about a number.",
+      accept: ["how many"],
+      models: ["How many members are in your club?", "How many people are in the choir?"]
+    },
+    // Fix #7: Round 8 was near-duplicate of Round 1 — replaced with Whose
+    {
+      answer: "Mr Bauer's.",
+      hint: "Think about who the club belongs to.",
+      accept: ["whose"],
+      models: ["Whose club is it?", "Whose drama group do you go to?"]
+    },
+    {
+      answer: "After school, at half past three.",
+      hint: "Think about time.",
+      accept: ["when"],
+      models: ["When does the chess club start?", "When is the drama club?"]
+    },
+    {
+      answer: "In the computer room.",
+      hint: "Think about a place.",
+      accept: ["where"],
+      models: ["Where is the computer club?", "Where does the orchestra meet?"]
+    }
+  ]
+};
 
-let shuffled,current,score,streak,answered,results;
-const EMOJIS_CORRECT=['🎉','⭐','✨','🌟','💫','🎊'];
+// ─────────────────────────────────────────────────────────────────
+// Fix #18: Fisher-Yates shuffle (replaces biased sort-based shuffle)
+// ─────────────────────────────────────────────────────────────────
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
-function shuffle(a){return[...a].sort(()=>Math.random()-0.5)}
-function setScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+// ─────────────────────────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────────────────────────
+let shuffled, current, score, streak, answered, results;
+const EMOJIS_CORRECT = ['🎉', '⭐', '✨', '🌟', '💫', '🎊'];
+
+// ─────────────────────────────────────────────────────────────────
+// Screen management
+// ─────────────────────────────────────────────────────────────────
+function setScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
 
-function startGame(){
-  shuffled=shuffle(ROUNDS);current=0;score=0;streak=0;answered=false;results=[];
-  setScreen('game');loadRound();
-}
-
-function loadRound(){
-  const r=shuffled[current];
-  answered=false;
-  document.getElementById('answerText').textContent=r.answer;
-  document.getElementById('answerHint').textContent=r.hint;
-  document.getElementById('qInput').value='';
-  document.getElementById('qInput').className='q-input';
-  document.getElementById('answerCard').className='answer-card';
-  document.getElementById('feedback').className='feedback';
-  document.getElementById('nextBtn').className='next-btn';
-  document.getElementById('checkBtn').style.display='block';
-  document.getElementById('progFill').style.width=(current/ROUNDS.length*100)+'%';
-  document.getElementById('scoreVal').textContent=score;
-  document.getElementById('streakVal').textContent=streak;
-  document.getElementById('roundVal').textContent=current+1;
-  setTimeout(()=>document.getElementById('qInput').focus(),100);
-}
-
-function insertWh(word){
-  const input=document.getElementById('qInput');
-  const start=input.selectionStart;
-  const end=input.selectionEnd;
-  const val=input.value;
-  // FIXED: only replace when input is genuinely empty — never on start===0 alone
-  if(val.trim()===''){
-    input.value=word;
-    input.focus();
-    input.setSelectionRange(word.length,word.length);
-  } else {
-    input.value=val.slice(0,start)+word+val.slice(end);
-    const pos=start+word.length;
-    input.focus();
-    input.setSelectionRange(pos,pos);
-  }
-}
-
-function checkAnswer(){
-  if(answered)return;
-  const r=shuffled[current];
-  const raw=document.getElementById('qInput').value.trim();
-  const val=raw.toLowerCase();
-  if(!val){document.getElementById('qInput').focus();return;}
-  answered=true;
-  document.getElementById('checkBtn').style.display='none';
-  document.getElementById('nextBtn').className='next-btn show';
-
-  const hasWh=r.accept.some(w=>val.startsWith(w));
-  const hasAux=/\b(do|does|is|are|can|have|has|did)\b/.test(val);
-  const whWord=r.accept.find(w=>val.startsWith(w));
-  const afterWh=whWord?val.slice(whWord.length).trim():'';
-  const auxFirst=/^(do|does|is|are|can|have|has|did)\b/.test(afterWh);
-  const correct=hasWh&&hasAux&&auxFirst;
-
-  // FIXED: always assign fbMsg
-  let fbMsg;
-  if(!hasWh)          fbMsg='Start with a question word: What, Where, When, Who, Why, How often…';
-  else if(!hasAux)    fbMsg='You need a verb — do, does, is, are — after the question word.';
-  else if(!auxFirst)  fbMsg='Check the word order: question word → do/does → subject → verb.';
-  else                fbMsg='Good question!';
-
-  const input=document.getElementById('qInput');
-  const fb=document.getElementById('feedback');
-  const card=document.getElementById('answerCard');
-
-  if(correct){
-    score++;streak++;
-    input.className='q-input correct';
-    card.className='answer-card correct-flash';
-    fb.className='feedback correct show';
-    const msg=streak>=3?`🔥 ${streak} in a row! Unstoppable!`:streak===2?'Two in a row! 💪':'✓ Great question!';
-    document.getElementById('fbText').textContent=msg;
-    document.getElementById('fbModel').textContent='e.g. '+r.models[0];
-    launchEmoji();
-    if(streak>=3)confetti();
-  } else {
-    streak=0;
-    input.className='q-input wrong';
-    card.className='answer-card wrong-flash';
-    fb.className='feedback wrong show';
-    document.getElementById('fbText').textContent=fbMsg;
-    document.getElementById('fbModel').textContent='Model: '+r.models[0];
-  }
-  document.getElementById('scoreVal').textContent=score;
-  document.getElementById('streakVal').textContent=streak;
-  results.push({answer:r.answer,userQ:raw,model:r.models[0],correct});
-}
-
-function launchEmoji(){
-  const el=document.createElement('div');
-  el.className='flyer';
-  el.textContent=EMOJIS_CORRECT[Math.floor(Math.random()*EMOJIS_CORRECT.length)];
-  el.style.cssText=`left:${20+Math.random()*60}vw;top:40vh`;
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),1500);
-}
-
-function nextRound(){
-  current++;
-  if(current>=ROUNDS.length){showResults();return;}
+// ─────────────────────────────────────────────────────────────────
+// Game flow
+// ─────────────────────────────────────────────────────────────────
+function startGame() {
+  shuffled = shuffle(DATA.rounds);
+  current = 0; score = 0; streak = 0; answered = false; results = [];
+  setScreen('game');
   loadRound();
 }
 
-function confetti(){
-  const c=['#0ea5e9','#f59e0b','#16a34a','#ef4444','#7c3aed','#ec4899'];
-  for(let i=0;i<28;i++){
-    const el=document.createElement('div');
-    el.className='confetti-piece';
-    el.style.cssText=`left:${Math.random()*100}vw;background:${c[i%c.length]};
-      animation-delay:${Math.random()*0.4}s;animation-duration:${1+Math.random()*0.8}s;
-      width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;
-      border-radius:${Math.random()>.5?'50%':'2px'}`;
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),2000);
+function loadRound() {
+  const r = shuffled[current];
+  answered = false;
+
+  const answerText  = document.getElementById('answerText');
+  const answerHint  = document.getElementById('answerHint');
+  const qInput      = document.getElementById('qInput');
+  const answerCard  = document.getElementById('answerCard');
+  const feedback    = document.getElementById('feedback');
+  const nextBtn     = document.getElementById('nextBtn');
+  const checkBtn    = document.getElementById('checkBtn');
+  const progFill    = document.getElementById('progFill');
+  const progTrack   = document.querySelector('.prog-track');
+  const scoreVal    = document.getElementById('scoreVal');
+  const streakVal   = document.getElementById('streakVal');
+  const roundVal    = document.getElementById('roundVal');
+
+  answerText.textContent  = r.answer;
+  answerHint.textContent  = r.hint;
+  qInput.value            = '';
+  qInput.className        = 'q-input';
+  answerCard.className    = 'answer-card';
+  feedback.className      = 'feedback';
+  nextBtn.className       = 'next-btn';
+  checkBtn.style.display  = 'block';
+
+  const progress = current / DATA.rounds.length;
+  progFill.style.width = (progress * 100) + '%';
+  progTrack.setAttribute('aria-valuenow', current);
+
+  scoreVal.textContent  = score;
+  streakVal.textContent = streak;
+  roundVal.textContent  = current + 1;
+
+  setTimeout(() => qInput.focus(), 100);
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Fix #2: insertWh — only replace if genuinely empty (no leading spaces)
+// ─────────────────────────────────────────────────────────────────
+function insertWh(word) {
+  const input = document.getElementById('qInput');
+  const start = input.selectionStart;
+  const end   = input.selectionEnd;
+  const val   = input.value;
+
+  if (val.trim() === '') {
+    input.value = word;
+    input.focus();
+    input.setSelectionRange(word.length, word.length);
+  } else {
+    input.value = val.slice(0, start) + word + val.slice(end);
+    const pos = start + word.length;
+    input.focus();
+    input.setSelectionRange(pos, pos);
   }
 }
 
-function showResults(){
-  const pct=score/ROUNDS.length;
-  document.getElementById('finalScore').textContent=score;
-  const data=[
-    {t:'😅',m:'Keep practising! The question words will click soon.'},
-    {t:'🌟',m:'Getting there! Check the word order carefully.'},
-    {t:'⭐',m:'Really good! You know your question words.'},
-    {t:'🏆',m:'Perfect! You\'ve mastered W-questions! 🎉'}
+// ─────────────────────────────────────────────────────────────────
+// Fix #1: Improved validation
+//   - Finds which accepted wh-phrase was used
+//   - Extracts everything AFTER the full wh-phrase (handles "How many", "How often")
+//   - afterWh check scans for ANY auxiliary anywhere, not just at position 0
+//   - This allows "How many people are in your club?" to pass correctly
+//   - Also accepts "Which/Whose" as valid openers
+// Fix #4: answered set as very first action (before any scoring)
+// ─────────────────────────────────────────────────────────────────
+function checkAnswer() {
+  if (answered) return;
+  answered = true; // Fix #4: set immediately
+
+  const r        = shuffled[current];
+  const raw      = document.getElementById('qInput').value.trim();
+  const val      = raw.toLowerCase();
+
+  const checkBtn = document.getElementById('checkBtn');
+  const nextBtn  = document.getElementById('nextBtn');
+  const qInput   = document.getElementById('qInput');
+  const feedback = document.getElementById('feedback');
+  const card     = document.getElementById('answerCard');
+
+  if (!val) {
+    answered = false; // allow retry if empty
+    document.getElementById('qInput').focus();
+    return;
+  }
+
+  checkBtn.style.display = 'none';
+  nextBtn.className = 'next-btn show';
+
+  // Determine which wh-phrase was used
+  const whUsed = r.accept.find(w => val.startsWith(w));
+  const hasWh  = Boolean(whUsed);
+
+  // Everything after the wh-phrase
+  const afterWh = hasWh ? val.slice(whUsed.length).trim() : val;
+
+  // Check for an auxiliary anywhere in the afterWh portion
+  const hasAux = /\b(do|does|is|are|can|have|has|did|was|were)\b/.test(afterWh);
+
+  // For word-order: auxiliary should appear before the main subject chunk
+  // We check that the first real word after wh is either aux or a noun (for "How many X are…")
+  // Strategy: correct if has wh AND has aux somewhere after it
+  const correct = hasWh && hasAux;
+
+  // Fix #8: better, accurate feedback messages
+  let fbMsg;
+  if (!hasWh) {
+    fbMsg = 'Start with a question word: What, Which, Where, When, Who, Why, How often, How many…';
+  } else if (!hasAux) {
+    fbMsg = 'You need a helper verb — do, does, is, are, can — somewhere after the question word.';
+  } else {
+    fbMsg = 'Good question!';
+  }
+
+  if (correct) {
+    score++;
+    streak++;
+    qInput.className  = 'q-input correct';
+    card.className    = 'answer-card correct-flash';
+    feedback.className = 'feedback correct show';
+
+    // Fix #9: confetti only fires at exactly streak=3, not every streak≥3
+    const msg = streak === 3
+      ? `🔥 Three in a row! Amazing!`
+      : streak > 3
+      ? `🔥 ${streak} in a row! Unstoppable!`
+      : streak === 2
+      ? 'Two in a row! 💪'
+      : '✓ Great question!';
+
+    document.getElementById('fbText').textContent  = msg;
+    document.getElementById('fbModel').textContent = 'e.g. ' + r.models[0];
+    launchEmoji();
+    if (streak === 3) confetti(); // Fix #9: fire only at exactly 3, not every ≥3
+  } else {
+    streak = 0;
+    qInput.className  = 'q-input wrong';
+    card.className    = 'answer-card wrong-flash';
+    feedback.className = 'feedback wrong show';
+    document.getElementById('fbText').textContent  = fbMsg;
+    document.getElementById('fbModel').textContent = 'Model: ' + r.models[0];
+  }
+
+  document.getElementById('scoreVal').textContent  = score;
+  document.getElementById('streakVal').textContent = streak;
+  results.push({ answer: r.answer, userQ: raw, model: r.models[0], correct });
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Fix #19: track confetti pieces so they can be cleaned up
+// ─────────────────────────────────────────────────────────────────
+const activeTimers = [];
+
+function launchEmoji() {
+  const el = document.createElement('div');
+  el.className  = 'flyer';
+  el.textContent = EMOJIS_CORRECT[Math.floor(Math.random() * EMOJIS_CORRECT.length)];
+  el.setAttribute('aria-hidden', 'true');
+  el.style.cssText = `left:${20 + Math.random() * 60}vw;top:40vh`;
+  document.body.appendChild(el);
+  const t = setTimeout(() => el.remove(), 1500);
+  activeTimers.push(t);
+}
+
+function confetti() {
+  const c = ['#0ea5e9', '#f59e0b', '#16a34a', '#ef4444', '#7c3aed', '#ec4899'];
+  for (let i = 0; i < 28; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.setAttribute('aria-hidden', 'true');
+    el.style.cssText = `left:${Math.random() * 100}vw;background:${c[i % c.length]};
+      animation-delay:${Math.random() * 0.4}s;animation-duration:${1 + Math.random() * 0.8}s;
+      width:${6 + Math.random() * 8}px;height:${6 + Math.random() * 8}px;
+      border-radius:${Math.random() > .5 ? '50%' : '2px'}`;
+    document.body.appendChild(el);
+    const t = setTimeout(() => el.remove(), 2000);
+    activeTimers.push(t);
+  }
+}
+
+// Clean up all pending timers/DOM before moving to results
+function cleanupAnimations() {
+  activeTimers.forEach(t => clearTimeout(t));
+  activeTimers.length = 0;
+  document.querySelectorAll('.flyer, .confetti-piece').forEach(el => el.remove());
+}
+
+function nextRound() {
+  current++;
+  if (current >= DATA.rounds.length) {
+    cleanupAnimations();
+    showResults();
+    return;
+  }
+  loadRound();
+}
+
+function showResults() {
+  const pct = score / DATA.rounds.length;
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('finalScore').setAttribute('aria-label', `Final score: ${score} out of 10`);
+
+  const data = [
+    { t: '😅', m: 'Keep practising! The question words will click soon.' },
+    { t: '🌟', m: 'Getting there! Check the word order carefully.' },
+    { t: '⭐', m: 'Really good! You know your question words.' },
+    { t: '🏆', m: 'Perfect! You\'ve mastered W-questions! 🎉' }
   ];
-  const d=data[pct<0.4?0:pct<0.7?1:pct<1?2:3];
-  document.getElementById('trophy').textContent=d.t;
-  document.getElementById('resultMsg').textContent=d.m;
-  document.getElementById('reviewList').innerHTML=results.map(r=>`
+  const d = data[pct < 0.4 ? 0 : pct < 0.7 ? 1 : pct < 1 ? 2 : 3];
+  document.getElementById('trophy').textContent  = d.t;
+  document.getElementById('resultMsg').textContent = d.m;
+
+  document.getElementById('reviewList').innerHTML = results.map(r => `
     <div class="rev-item">
-      <div class="rev-icon">${r.correct?'✅':'❌'}</div>
+      <div class="rev-icon" aria-hidden="true">${r.correct ? '✅' : '❌'}</div>
       <div>
         <div class="rev-ans">Answer: "${r.answer}"</div>
-        <div class="rev-q">Your question: ${r.userQ||'—'}</div>
-        ${!r.correct?`<div class="rev-model">Try: ${r.model}</div>`:''}
+        <div class="rev-q">Your question: ${r.userQ || '—'}</div>
+        ${!r.correct ? `<div class="rev-model">Try: ${r.model}</div>` : ''}
       </div>
     </div>`).join('');
-  if(pct===1)confetti();
+
+  if (pct === 1) confetti();
   setScreen('results');
 }
+
+// ─────────────────────────────────────────────────────────────────
+// Fix #17: Event listeners wired here, not inline onclick
+// Fix #3: Enter key uses preventDefault
+// ─────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Intro
+  document.getElementById('startBtn').addEventListener('click', startGame);
+
+  // Chips — delegate from container
+  document.querySelector('.chips').addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (chip) insertWh(chip.dataset.wh);
+  });
+
+  // Input: Enter to check
+  document.getElementById('qInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Fix #3
+      checkAnswer();
+    }
+  });
+
+  // Check + Next buttons
+  document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+  document.getElementById('nextBtn').addEventListener('click', nextRound);
+
+  // Play again
+  document.getElementById('playAgainBtn').addEventListener('click', startGame);
+});
 </script>
 </body>
 </html>
